@@ -1,10 +1,9 @@
 from db.db import db
-from utils.Exceptions import UserNotFoundException
+from utils.Exceptions import UserNotFoundException, UserAlreadyExistException
 from bson import ObjectId
-from Schemas.UserSchema import SignUpSchema,UserSchema
-from fastapi import HTTPException
+from Schemas.UserSchema import SignUpSchema, UserSchema
 import datetime
-import pprint
+from utils.Hashing import hash_password
 from pymongo.errors import DuplicateKeyError
 
 collection = db["User"]
@@ -16,19 +15,18 @@ async def get_user_by_id(user_id: str) -> dict:
         if user:
             user["id"] = str(user["_id"])
             del user["_id"]
-            
+
             return user
     except Exception:
         raise UserNotFoundException
-    
+
 
 async def save_user(user: SignUpSchema):
     user = user.model_dump()
     user["created_at"] = datetime.datetime.now(datetime.UTC)
-    try:    
+    user["password"] = hash_password(user["password"])
+    try:
         user["id"] = str((await collection.insert_one(user)).inserted_id)
     except DuplicateKeyError:
-        raise HTTPException(status_code=409,detail="User with this email or username already created")
-    pprint.pprint(user)
+        raise UserAlreadyExistException
     return UserSchema.model_validate(user)
-    
