@@ -1,7 +1,16 @@
 version: '3.1'
 
 services:
-
+  backend:
+    depends_on:
+      - mongo
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      - MONGO_URL=mongodb://root:example@mongo:27017/
+      - DB_NAME=Mood
+      
   mongo:
     image: mongo
     restart: always
@@ -10,8 +19,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-    volumes:
-      - /usr/local/mongodb:/data/mongo
 
   mongo-express:
     image: mongo-express
