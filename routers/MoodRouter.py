@@ -1,17 +1,11 @@
 from fastapi import APIRouter
-from bson import ObjectId
-from db import db
-from utils.Exceptions import UserNotFoundException
+from db.repositories.UserRepo import get_user_by_id
 router = APIRouter(
     tags=["mood"],
     prefix="/mood"
 )
 
 @router.get("")
-async def get_you_moods(user_id: str):
-    collection = db["User"]
-    user = await collection.find_one({"_id": ObjectId(user_id)})
-    if user:
-        user["_id"] = str(user["_id"])
-        return user
-    raise UserNotFoundException
+async def get_you_moods(user_id: str) -> dict:
+    user: dict = await get_user_by_id(user_id)
+    return user
