@@ -1,11 +1,18 @@
 from fastapi import APIRouter
-from Schemas.UserSchema import SignUpSchema, UserSchema
+from Schemas.UserSchema import SignUpSchema, UserSchema, SignInSchema
 from db.repositories.UserRepo import save_user
+from utils.Email import send_confirmation_email
 
-
-router = APIRouter(tags=["Auth"])
+router = APIRouter(tags=["Auth"], prefix="/auth")
 
 
 @router.post("/signup")
-async def signup(user: SignUpSchema) -> UserSchema:
-    return await save_user(user)
+async def signup(user: SignUpSchema):
+    saved_user = await save_user(user)
+    send_confirmation_email.delay(saved_user.dict())
+    return {"message": "You`ve been registred, check your email to activate profile"}
+
+
+@router.post("/signin")
+async def signin(user: SignInSchema) -> UserSchema:
+    pass

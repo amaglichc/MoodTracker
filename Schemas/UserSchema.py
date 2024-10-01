@@ -8,7 +8,14 @@ class SignUpSchema(BaseModel):
     password: str = Field(min_length=5, max_length=50)
 
 
+class SignInSchema(BaseModel):
+    email: EmailStr = Field(max_length=50)
+    password: str = Field(min_length=5, max_length=50)
+
+
 class UserSchema(SignUpSchema):
     id: str
     created_at: datetime
+    role: str = "USER"
     password: str = Field(max_length=97)
+    is_active: bool = False

@@ -18,7 +18,29 @@ services:
       - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_PASSWORD: example 
+
+  
+  celery:
+      container_name: celery_worker
+      depends_on:
+       - redis
+      build:
+        context: .
+        dockerfile: CeleryDockerfile
+      environment:
+        - CELERY_BROKER_URL=redis://redis:6379/0
+        - CELERY_RESULT_BACKEND=redis://redis:6379/0
+        - CELERY_IMPORTS=utils.Email
+        - MONGO_URL=mongodb://root:example@mongo:27017/
+        - DB_NAME=Mood
+
+
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
 
   mongo-express:
     image: mongo-express
