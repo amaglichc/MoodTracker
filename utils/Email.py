@@ -2,7 +2,7 @@ import aiosmtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from config import settings
-from Auth.jwt import create_confirmation_token
+from db.repositories.AuthRepo import create_and_save_token
 from utils.Celery import celery
 import asyncio
 
@@ -20,18 +20,12 @@ async def send_email_async(user: dict):
     message["Subject"] = "Подтверждение регистрации"
     message["From"] = sender_email
     message["To"] = user["email"]
-    token = await create_confirmation_token(user["id"])
+    token = await create_and_save_token(user["id"])
 
     confirmation_link = f"http://localhost:8000/confirm-email/{token}"
-    text = f"Пожалуйста, подтвердите ваш email, перейдя по ссылке: {confirmation_link}"
-    html = (
-        f"<html><body><a href='{confirmation_link}'>Подтвердите email</a></body></html>"
-    )
+    html = f"<html><body><a href='{confirmation_link}'>Подтвердите email</a><h2>ВАШ КОД = {token}</h2></body></html>"
 
-    part1 = MIMEText(text, "plain")
     part2 = MIMEText(html, "html")
-
-    message.attach(part1)
     message.attach(part2)
 
     # Асинхронная отправка через SMTP

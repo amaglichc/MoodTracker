@@ -8,6 +8,6 @@ class TokenSchema(BaseModel):
 
 
 class ConfirmTokenSchema(BaseModel):
-    token: str
+    token: int
     user_id: str
     expires_at: datetime
