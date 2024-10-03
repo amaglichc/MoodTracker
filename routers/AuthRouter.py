@@ -14,9 +14,10 @@ async def signup(user: SignUpSchema):
     return {"message": "You`ve been registred, check your email to activate profile"}
 
 
-@router.post("/confirm/{token}")
+@router.get("/confirm/{token}")
 async def confirm_user(token: int):
     await activate_user_by_token(token)
+    return {"User has been activate"}
 
 
 @router.post("/signin")

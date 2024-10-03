@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .header h1 {
+            color: #4CAF50;
+            font-size: 24px;
+            margin: 0;
+        }
+        .content {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .content p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #555;
+        }
+        .code {
+            display: inline-block;
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            font-size: 24px;
+            color: #333;
+            letter-spacing: 3px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .link {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .link:hover {
+            background-color: #45a049;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Confirm Your Email</h1>
+        </div>
+        <div class="content">
+            <p>Thank you for registering! To complete your registration, please use the following code:</p>
+            <div class="code">{{ confirmation_code }}</div>
+            <p>Or click the link below to confirm your email:</p>
+            <a href="http://localhost:8080/auth/confirm/{{ confirmation_code }}" class="link">Confirm Email</a>
+            <p>If you didn't request this email, please ignore it.</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 MOODTRACKER CO. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

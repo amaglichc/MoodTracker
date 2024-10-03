@@ -5,12 +5,21 @@ from config import settings
 from db.repositories.AuthRepo import create_and_save_token
 from utils.Celery import celery
 import asyncio
+from jinja2 import Environment, FileSystemLoader
 
 
 @celery.task
 def send_confirmation_email(user: dict):
     loop = asyncio.get_event_loop()
     loop.run_until_complete(send_email_async(user))
+
+
+def render_html(confirmation_code: int):
+    file_loader = FileSystemLoader("templates")
+    env = Environment(loader=file_loader)
+    template = env.get_template("email.html")
+    context = {"confirmation_code": confirmation_code}
+    return template.render(context)
 
 
 async def send_email_async(user: dict):
@@ -20,15 +29,9 @@ async def send_email_async(user: dict):
     message["Subject"] = "Подтверждение регистрации"
     message["From"] = sender_email
     message["To"] = user["email"]
-    token = await create_and_save_token(user["id"])
-
-    confirmation_link = f"http://localhost:8000/confirm-email/{token}"
-    html = f"<html><body><a href='{confirmation_link}'>Подтвердите email</a><h2>ВАШ КОД = {token}</h2></body></html>"
-
-    part2 = MIMEText(html, "html")
+    code = await create_and_save_token(user["id"])
+    part2 = MIMEText(render_html(code), "html")
     message.attach(part2)
-
-    # Асинхронная отправка через SMTP
     await aiosmtplib.send(
         message,
         hostname="smtp.gmail.com",
