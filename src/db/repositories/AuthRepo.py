@@ -30,6 +30,6 @@ async def activate_user_by_token(token: int) -> None:
             user_collection.update_one(
                 {"_id": ObjectId(token_info["user_id"])}, {"$set": {"is_active": True}}
             )
-            await collection.delete_one({"_id":ObjectId(token_info["_id"])})
+            await collection.delete_one({"_id": ObjectId(token_info["_id"])})
             return None
     raise TokenException

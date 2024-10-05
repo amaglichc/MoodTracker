@@ -4,7 +4,10 @@ services:
   backend:
     depends_on:
       - mongo
-    build: .
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+
     ports:
       - 8080:8080
     env_file:
@@ -26,7 +29,7 @@ services:
       depends_on:
        - redis
       build:
-        context: .
+        context: ./src
         dockerfile: CeleryDockerfile
       env_file:
         - docker-compose.env

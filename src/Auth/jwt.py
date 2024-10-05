@@ -2,7 +2,7 @@ import jwt
 from datetime import datetime, timedelta, UTC
 from Schemas.UserSchema import UserSchema
 from Schemas.TokenSchema import TokenSchema, ConfirmTokenSchema
-from db.repositories.AuthRepo import save_token
+from db.repositories.AuthRepo import create_and_save_token
 
 ALGORITHM: str = "RS256"
 
@@ -29,7 +29,7 @@ def decode_token(token: str, public=public_key, algorithm=ALGORITHM) -> dict:
 
 
 def create_access_token(user: UserSchema) -> str:
-    data = {"token_type": "access", "sub": user.id, "role": UserSchema.role}
+    data = {"token_type": "access", "sub": user.id, "role": user.role}
     return create_token(data, expire_minutes=15)
 
 
@@ -54,4 +54,4 @@ async def create_confirmation_token(user_id: str):
         algorithm=ALGORITHM,
     )
     token_schema = ConfirmTokenSchema(token=token, user_id=user_id, expires_at=exp)
-    await save_token(token=token_schema)
+    await create_and_save_token(token=token_schema)

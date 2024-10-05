@@ -16,6 +16,6 @@ class SignInSchema(BaseModel):
 class UserSchema(SignUpSchema):
     id: str
     created_at: datetime
-    role: str = "USER"
+    role: str
     password: str = Field(max_length=97)
     is_active: bool = False
